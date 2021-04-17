@@ -1,4 +1,4 @@
 
-To run application you need to use virtual env for kivy located in : ~/kivy_venv/
+To test application you need to use virtual env for kivy located in : ~/venv/
 
-	source kivy_venv/Scripts/activate
+	source venv/Scripts/activate
