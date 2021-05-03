@@ -1,0 +1,259 @@
+WindowManager:
+    DatabaseManager:
+    CreateRace:
+    CreateProfession:
+    CreateSex:
+    CreateStarSign:
+
+
+<BoxLayout>:
+    orientation: "vertical"
+    size: root.width, root.height
+    padding: 10
+    spacing: 10
+
+<GridLayout>:
+    cols: 1
+
+<TextInput>:
+    font_size: 14
+
+<Label>:
+    font_size: 14
+
+
+<DatabaseManager>:
+    name: "DbManager"
+
+    BoxLayout:
+
+        Label:
+            text: "Database Manager"
+            font_size: 46
+            size_hint: (1,0.2)
+
+        GridLayout:
+            cols: 3
+
+            Button:
+                text: "Create Race"
+                font_size: 32
+                on_release: app.root.current = "CRace"
+
+            Button:
+                text: "Create Profession"
+                font_size: 32
+                on_release: app.root.current = "CProfession"
+
+            Button:
+                text: "Create Sex"
+                font_size: 32
+                on_release: app.root.current = "CSex"
+
+            Button:
+                text: "Create Star sign"
+                font_size: 32
+                on_release: app.root.current = "CStarSign"
+
+
+<CreateRace>:
+    name: "CRace"
+
+    nameOfRace: nameOfRace
+    description: description
+    primaryStatistics: primaryStatistics
+    secondaryStatistics: secondaryStatistics
+    wRoll: wRoll
+    fpRoll: fpRoll
+
+    BoxLayout:
+
+        GridLayout:
+            cols: 2
+            size_hint: (1,0.8)
+
+            SmallLabel:
+                text: "Name"
+            SmallTextInput:
+                id: nameOfRace
+
+            BigLabel:
+                text: "Description"
+            BigTextInput:
+                id: description
+
+            SmallLabel:
+                text: "Primary statistics"
+            SmallTextInput:
+                id: primaryStatistics
+                hint_text: '0000000000000000'
+
+            SmallLabel:
+                text: "Secondary statistics"
+            SmallTextInput:
+                id: secondaryStatistics
+                hint_text: '0000000000000000'
+
+            SmallLabel:
+                text: "Vitality roll"
+            SmallTextInput:
+                id: wRoll
+                hint_text: '00000000'
+
+            SmallLabel:
+                text: "Fate points roll"
+            SmallTextInput:
+                id: fpRoll
+                hint_text: '000'
+
+        Button:
+            text: "Submit"
+            pos_hint: {'center_x': 0.5}
+            size_hint: (.2,.1)
+            on_press: root.press()
+
+        Button:
+            text: "Go back"
+            size_hint: (.2,.1)
+            font_size: 32
+            on_release: app.root.current = "DbManager"
+
+
+<CreateProfession>:
+    name: "CProfession"
+
+    nameOfProfession: nameOfProfession
+    description: description
+    availableFor: availableFor
+    primaryStatistics: primaryStatistics
+    secondaryStatistics: secondaryStatistics
+    equipment: equipment
+    weapon: weapon
+    armor: armor
+
+    BoxLayout:
+
+        GridLayout:
+            cols: 2
+            size_hint: (1,0.8)
+
+            SmallLabel:
+                text: "Name"
+            SmallTextInput:
+                id: nameOfProfession
+
+            BigLabel:
+                text: "Description"
+            BigTextInput:
+                id: description
+                multiline: True
+
+            SmallLabel:
+                text: "Available for"
+            SmallTextInput:
+                id: availableFor
+                hint_text: '0000'
+
+            SmallLabel:
+                text: "Primary statistics"
+            SmallTextInput:
+                id: primaryStatistics
+                hint_text: '0000000000000000'
+
+            SmallLabel:
+                text: "Secondary statistics"
+            SmallTextInput:
+                id: secondaryStatistics
+                hint_text: '0000000000000000'
+
+            SmallLabel:
+                text: "Equipment"
+            SmallTextInput:
+                id: equipment
+
+            SmallLabel:
+                text: "Weapon"
+            SmallTextInput:
+                id: weapon
+
+            SmallLabel:
+                text: "Armor"
+            SmallTextInput:
+                id: armor
+
+        Button:
+            text: "Submit"
+            pos_hint: {'center_x': 0.5}
+            size_hint: (.2,.1)
+            on_press: root.press()
+
+        Button:
+            text: "Go back"
+            size_hint: (.2,.1)
+            font_size: 32
+            on_release: app.root.current = "DbManager"
+
+
+<CreateSex>:
+    name: "CSex"
+
+    nameOfSex: nameOfSex
+
+    BoxLayout:
+
+        GridLayout:
+            cols: 2
+            size_hint: (1,0.8)
+
+            SmallLabel:
+                text: "Name"
+            SmallTextInput:
+                id: nameOfSex
+
+        Button:
+            text: "Submit"
+            pos_hint: {'center_x': 0.5}
+            size_hint: (.2,.1)
+            on_press: root.press()
+
+        Button:
+            text: "Go back"
+            size_hint: (.2,.1)
+            font_size: 32
+            on_release: app.root.current = "DbManager"
+
+
+<CreateStarSign>:
+    name: "CStarSign"
+
+    nameOfStarSign: nameOfStarSign
+    description: description
+
+    BoxLayout:
+
+        GridLayout:
+            cols: 2
+            size_hint: (1,0.8)
+
+            SmallLabel:
+                text: "Name"
+            SmallTextInput:
+                id: nameOfStarSign
+
+            BigLabel:
+                text: "Description"
+            BigTextInput:
+                id: description
+
+        Button:
+            text: "Submit"
+            pos_hint: {'center_x': 0.5}
+            size_hint: (.2,.1)
+            on_press: root.press()
+
+        Button:
+            text: "Go back"
+            size_hint: (.2,.1)
+            font_size: 32
+            on_release: app.root.current = "DbManager"
+
