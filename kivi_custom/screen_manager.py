@@ -1,7 +1,18 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
 from database.realtime_handler import Handler
+from kivi_custom.popup_box import Messager as popup
 
 
+class WindowManager(ScreenManager):
+    pass
+
+
+# Main menu
+class MainMenu(Screen):
+    pass
+
+
+# Admin panel
 class DatabaseManager(Screen):
     pass
 
@@ -24,13 +35,13 @@ class CreateRace(Screen):
                 self.secondaryStatistics.text == "" or
                 self.fpRoll.text == "" or
                 self.wRoll.text == ""):
-            print('Please fill all of the blank spots')
+            popup.display_error('Please fill all of the blank spots')
 
         elif (len(self.primaryStatistics.text) != 16 or
               len(self.secondaryStatistics.text) != 16 or
               len(self.wRoll.text) != 8 or
               len(self.fpRoll.text) != 3):
-            print('Wrong format in one of the boxes')
+            popup.display_error('Wrong format in one of the boxes')
 
         else:
             data = {'name': self.nameOfRace.text,
@@ -67,11 +78,11 @@ class CreateProfession(Screen):
                 self.equipment.text == "" or
                 self.weapon.text == "" or
                 self.armor.text == ""):
-            print('Please fill all of the blank spots')
+            popup.display_error('Please fill all of the blank spots')
 
         elif (len(self.primaryStatistics.text) != 16 or
               len(self.secondaryStatistics.text) != 16):
-            print('Wrong format in one of the boxes')
+           popup.display_error('Wrong format in one of the boxes')
 
         else:
             data = {'name': self.nameOfProfession.text,
@@ -96,7 +107,7 @@ class CreateSex(Screen):
 
         if self.nameOfSex.text == "":
 
-            print('Please fill all of the blank spots')
+            popup.display_error('Please fill all of the blank spots')
 
         else:
             data = {'name': self.nameOfSex.text}
@@ -116,7 +127,7 @@ class CreateStarSign(Screen):
         if (self.nameOfStarSign.text == "" or
                 self.description.text == ""):
 
-            print('Please fill all of the blank spots')
+            popup.display_error('Please fill all of the blank spots')
 
         else:
             data = {'name': self.nameOfStarSign.text,
@@ -124,8 +135,4 @@ class CreateStarSign(Screen):
             Handler.push_data(data, 'StarSigns')
             self.clearInputBoxes()
 
-    pass
-
-
-class WindowManager(ScreenManager):
     pass

@@ -4,6 +4,7 @@ WindowManager:
     CreateProfession:
     CreateSex:
     CreateStarSign:
+    MainMenu:
 
 
 <BoxLayout>:
@@ -21,6 +22,11 @@ WindowManager:
 <Label>:
     font_size: 14
 
+<Messager>:
+    text: "%s"%root.textContent
+
+<MainMenu>:
+    name: "Main"
 
 <DatabaseManager>:
     name: "DbManager"
@@ -30,6 +36,9 @@ WindowManager:
         Label:
             text: "Database Manager"
             font_size: 46
+            text_size: self.size
+            halign: 'center'
+            valign: 'middle'
             size_hint: (1,0.2)
 
         GridLayout:
@@ -38,22 +47,30 @@ WindowManager:
             Button:
                 text: "Create Race"
                 font_size: 32
-                on_release: app.root.current = "CRace"
+                on_release:
+                    app.root.current = "CRace"
+                    root.manager.transition.direction = "left"
 
             Button:
                 text: "Create Profession"
                 font_size: 32
-                on_release: app.root.current = "CProfession"
+                on_release:
+                    app.root.current = "CProfession"
+                    root.manager.transition.direction = "left"
 
             Button:
                 text: "Create Sex"
                 font_size: 32
-                on_release: app.root.current = "CSex"
+                on_release:
+                    app.root.current = "CSex"
+                    root.manager.transition.direction = "left"
 
             Button:
                 text: "Create Star sign"
                 font_size: 32
-                on_release: app.root.current = "CStarSign"
+                on_release:
+                    app.root.current = "CStarSign"
+                    root.manager.transition.direction = "left"
 
 
 <CreateRace>:
@@ -110,13 +127,15 @@ WindowManager:
             text: "Submit"
             pos_hint: {'center_x': 0.5}
             size_hint: (.2,.1)
-            on_press: root.press()
+            on_press:
+                root.press()
 
         Button:
             text: "Go back"
             size_hint: (.2,.1)
-            font_size: 32
-            on_release: app.root.current = "DbManager"
+            on_release:
+                app.root.current = "DbManager"
+                root.manager.transition.direction = "right"
 
 
 <CreateProfession>:
@@ -190,8 +209,9 @@ WindowManager:
         Button:
             text: "Go back"
             size_hint: (.2,.1)
-            font_size: 32
-            on_release: app.root.current = "DbManager"
+            on_release:
+                app.root.current = "DbManager"
+                root.manager.transition.direction = "right"
 
 
 <CreateSex>:
@@ -207,8 +227,10 @@ WindowManager:
 
             SmallLabel:
                 text: "Name"
+                size_hint_x: .2
             SmallTextInput:
                 id: nameOfSex
+                size_hint_x: .8
 
         Button:
             text: "Submit"
@@ -219,8 +241,9 @@ WindowManager:
         Button:
             text: "Go back"
             size_hint: (.2,.1)
-            font_size: 32
-            on_release: app.root.current = "DbManager"
+            on_release:
+                app.root.current = "DbManager"
+                root.manager.transition.direction = "right"
 
 
 <CreateStarSign>:
@@ -254,6 +277,7 @@ WindowManager:
         Button:
             text: "Go back"
             size_hint: (.2,.1)
-            font_size: 32
-            on_release: app.root.current = "DbManager"
+            on_release:
+                app.root.current = "DbManager"
+                root.manager.transition.direction = "right"
 
