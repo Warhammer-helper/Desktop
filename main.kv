@@ -1,32 +1,214 @@
 WindowManager:
+
+    MainMenu:
+
+    Authorization:
+
     DatabaseManager:
     CreateRace:
     CreateProfession:
     CreateSex:
     CreateStarSign:
-    MainMenu:
 
 
 <BoxLayout>:
     orientation: "vertical"
     size: root.width, root.height
-    padding: 10
-    spacing: 10
-
+    padding: 5
+    spacing: 5
 <GridLayout>:
     cols: 1
-
 <TextInput>:
     font_size: 14
-
 <Label>:
     font_size: 14
-
-<Messager>:
+<PopupBox>:
     text: "%s"%root.textContent
+
 
 <MainMenu>:
     name: "Main"
+
+    BoxLayout:
+
+        BoxLayout:
+            size_hint: (1, .1)
+            orientation: "horizontal"
+            canvas.before:
+                Color:
+                    rgba: (128/255,128/255,128/255,1)
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            Label:
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.size
+                size_hint_x: .5
+                text: root.text
+            PrimaryButton:
+                text: "Manage" if (root.text != '') else ''
+                size_hint_x: .25
+                opacity: 1 if (root.text != '') else 0
+                disabled: False if (root.text != '') else True
+                on_release:
+                    root.logout() if (root.text != '') else root.changeScreen("Authorization")
+                    root.manager.transition.direction = "down"
+            PrimaryButton:
+                text: "Log Out" if (root.text != '') else "Log In"
+                size_hint_x: .25
+                on_release:
+                    root.logout() if (root.text != '') else root.changeScreen("Authorization")
+                    root.manager.transition.direction = "down"
+        BoxLayout:
+            size_hint: (1,.9)
+
+            canvas.before:
+                Color:
+                    rgba: (128/255,128/255,128/255,1)
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            Label:
+                text: 'Warhammer\nHelper'
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.size
+                bold: True
+                font_size: 32
+
+                style: 'bold'
+            PrimaryButton:
+                text: "New"
+            PrimaryButton:
+                text: "Roll"
+            PrimaryButton:
+                text: "Table"
+            PrimaryButton:
+                opacity: 0 if root.manager.admin == '' else 1
+                disabled: 1 if root.manager.admin == '' else 0
+                text: "Admin Panel"
+                on_release:
+                    app.root.current = "DbManager"
+                    root.manager.transition.direction = "down"
+
+<Authorization>:
+    name: "Authorization"
+
+    loginEmail: loginEmail
+    loginPassword: loginPassword
+    registerEmail: registerEmail
+    registerPassword: registerPassword
+    registerPasswordConfirm: registerPasswordConfirm
+    BoxLayout:
+        orientation: "horizontal"
+        size_hint: (.8, .8)
+        pos_hint: {'center_x': .5, 'center_y': .5}
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgba: (128/255,128/255,128/255,1)
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            Label:
+                text: "Log in"
+                font_size: 46
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+                size_hint: (1,0.2)
+
+            GridLayout:
+                cols:2
+
+                SmallLabel:
+                    text: "Email:"
+                    size_hint_x: .3
+                SmallTextInput:
+                    id: loginEmail
+                    size_hint_x: .8
+
+                SmallLabel:
+                    text: "Password:"
+                SmallTextInput:
+                    id: loginPassword
+                    allow_copy: False
+                    password: True
+
+            SubmitButton:
+                text: "Submit"
+                size_hint: (0.4, 0.2)
+                pos_hint: {'center_x': 0.5}
+                on_release:
+                    app.root.current = "Main" if root.submitLogin() else "AccountCreation"
+
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgba: (128/255,128/255,128/255,1)
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            Label:
+                text: "Register"
+                font_size: 46
+                text_size: self.size
+                halign: 'center'
+                valign: 'middle'
+                size_hint: (1,0.2)
+
+            GridLayout:
+                cols:2
+
+                SmallLabel:
+                    text: "Email:"
+                    size_hint_x: .3
+                SmallTextInput:
+                    id: registerEmail
+                    size_hint_x: .8
+
+                SmallLabel:
+                    text: "Password:"
+                SmallTextInput:
+                    id: registerPassword
+                    allow_copy: False
+                    password: True
+
+                SmallLabel:
+                    text: "Confirm password:"
+                SmallTextInput:
+                    id: registerPasswordConfirm
+                    allow_copy: False
+                    password: True
+
+            SubmitButton:
+                text: "Submit"
+                size_hint: (0.4, 0.2)
+                pos_hint: {'center_x': 0.5}
+                on_release:
+                    root.submitRegister()
+
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (1, 1)
+
+        PrimaryButton:
+            text: "Back"
+            size_hint: (None, None)
+            height: 50
+            width: 100
+            on_release:
+                app.root.current = "Main"
+                root.manager.transition.direction = "up"
+        Widget:
+
+
 
 <DatabaseManager>:
     name: "DbManager"
@@ -39,33 +221,34 @@ WindowManager:
             text_size: self.size
             halign: 'center'
             valign: 'middle'
-            size_hint: (1,0.2)
+            size_hint: (1,0.1)
 
         GridLayout:
             cols: 3
+            size_hint: (1,0.9)
 
-            Button:
+            PrimaryButton:
                 text: "Create Race"
                 font_size: 32
                 on_release:
                     app.root.current = "CRace"
                     root.manager.transition.direction = "left"
 
-            Button:
+            PrimaryButton:
                 text: "Create Profession"
                 font_size: 32
                 on_release:
                     app.root.current = "CProfession"
                     root.manager.transition.direction = "left"
 
-            Button:
+            PrimaryButton:
                 text: "Create Sex"
                 font_size: 32
                 on_release:
                     app.root.current = "CSex"
                     root.manager.transition.direction = "left"
 
-            Button:
+            PrimaryButton:
                 text: "Create Star sign"
                 font_size: 32
                 on_release:
@@ -123,14 +306,14 @@ WindowManager:
                 id: fpRoll
                 hint_text: '000'
 
-        Button:
+        SubmitButton:
             text: "Submit"
             pos_hint: {'center_x': 0.5}
             size_hint: (.2,.1)
-            on_press:
+            on_release:
                 root.press()
 
-        Button:
+        PrimaryButton:
             text: "Go back"
             size_hint: (.2,.1)
             on_release:
@@ -200,15 +383,13 @@ WindowManager:
             SmallTextInput:
                 id: armor
 
-        Button:
+        SubmitButton:
             text: "Submit"
             pos_hint: {'center_x': 0.5}
-            size_hint: (.2,.1)
             on_press: root.press()
 
-        Button:
+        PrimaryButton:
             text: "Go back"
-            size_hint: (.2,.1)
             on_release:
                 app.root.current = "DbManager"
                 root.manager.transition.direction = "right"
@@ -232,13 +413,13 @@ WindowManager:
                 id: nameOfSex
                 size_hint_x: .8
 
-        Button:
+        SubmitButton:
             text: "Submit"
             pos_hint: {'center_x': 0.5}
             size_hint: (.2,.1)
             on_press: root.press()
 
-        Button:
+        PrimaryButton:
             text: "Go back"
             size_hint: (.2,.1)
             on_release:
@@ -268,13 +449,13 @@ WindowManager:
             BigTextInput:
                 id: description
 
-        Button:
+        SubmitButton:
             text: "Submit"
             pos_hint: {'center_x': 0.5}
             size_hint: (.2,.1)
             on_press: root.press()
 
-        Button:
+        PrimaryButton:
             text: "Go back"
             size_hint: (.2,.1)
             on_release:

@@ -1,14 +1,58 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivi_custom.popup_box import PopupBox as Popup
+from kivy.app import StringProperty
+
 from database.realtime_handler import Handler
-from kivi_custom.popup_box import Messager as popup
+from database.account import Account
 
 
 class WindowManager(ScreenManager):
+    admin = StringProperty('')
+    account = Account()
     pass
 
 
 # Main menu
 class MainMenu(Screen):
+    text = StringProperty('')
+
+    def updateText(self, text):
+        self.text = text
+
+    def changeScreen(self, screen):
+        self.manager.current = screen
+
+    def logout(self):
+        self.text = ''
+        self.manager.admin = ''
+        self.manager.account.user = None
+
+    pass
+
+
+# Account
+class Authorization(Screen):
+
+    def submitLogin(self):
+        if self.manager.account.login(self.loginEmail.text, self.loginPassword.text):
+
+            if self.loginEmail.text == "admin@admin.com":
+                self.manager.admin = 'True'
+
+            menu_screen = self.manager.get_screen('Main')
+            menu_screen.updateText(self.manager.account.getUsername())
+            return True
+        else:
+            return False
+
+    def submitRegister(self):
+        if self.manager.account.register(self.registerEmail.text,
+                                         self.registerPassword.text,
+                                         self.registerPasswordConfirm.text):
+            return True
+        else:
+            return False
+
     pass
 
 
@@ -35,13 +79,13 @@ class CreateRace(Screen):
                 self.secondaryStatistics.text == "" or
                 self.fpRoll.text == "" or
                 self.wRoll.text == ""):
-            popup.display_error('Please fill all of the blank spots')
+            Popup.display_error('Please fill all of the blank spots')
 
         elif (len(self.primaryStatistics.text) != 16 or
               len(self.secondaryStatistics.text) != 16 or
               len(self.wRoll.text) != 8 or
               len(self.fpRoll.text) != 3):
-            popup.display_error('Wrong format in one of the boxes')
+            Popup.display_error('Wrong format in one of the boxes')
 
         else:
             data = {'name': self.nameOfRace.text,
@@ -78,11 +122,11 @@ class CreateProfession(Screen):
                 self.equipment.text == "" or
                 self.weapon.text == "" or
                 self.armor.text == ""):
-            popup.display_error('Please fill all of the blank spots')
+            Popup.display_error('Please fill all of the blank spots')
 
         elif (len(self.primaryStatistics.text) != 16 or
               len(self.secondaryStatistics.text) != 16):
-           popup.display_error('Wrong format in one of the boxes')
+            Popup.display_error('Wrong format in one of the boxes')
 
         else:
             data = {'name': self.nameOfProfession.text,
@@ -107,7 +151,7 @@ class CreateSex(Screen):
 
         if self.nameOfSex.text == "":
 
-            popup.display_error('Please fill all of the blank spots')
+            Popup.display_error('Please fill all of the blank spots')
 
         else:
             data = {'name': self.nameOfSex.text}
@@ -127,7 +171,7 @@ class CreateStarSign(Screen):
         if (self.nameOfStarSign.text == "" or
                 self.description.text == ""):
 
-            popup.display_error('Please fill all of the blank spots')
+            Popup.display_error('Please fill all of the blank spots')
 
         else:
             data = {'name': self.nameOfStarSign.text,
