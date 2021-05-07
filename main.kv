@@ -4,6 +4,8 @@ WindowManager:
 
     Authorization:
 
+    CharacterBoard:
+
     DatabaseManager:
     CreateRace:
     CreateProfession:
@@ -84,7 +86,10 @@ WindowManager:
             PrimaryButton:
                 text: "Roll"
             PrimaryButton:
-                text: "Table"
+                text: "Character board"
+                on_release:
+                    app.root.current = "CharacterBoard"
+                    root.manager.transition.direction = "down"
             PrimaryButton:
                 opacity: 0 if root.manager.admin == '' else 1
                 disabled: 1 if root.manager.admin == '' else 0
@@ -208,6 +213,28 @@ WindowManager:
                 root.manager.transition.direction = "up"
         Widget:
 
+
+<CharacterBoard>:
+    name: "CharacterBoard"
+
+    layout: layout
+
+    ScrollView:
+        size_hint: 1, 1
+        BoxLayout:
+            id: layout
+            orientation: 'vertical'
+            size_hint: 1, None
+            height: sum(x.height+5 for x in self.children)-65 if root.openedTimes != 2 else sum(x.height+5 for x in self.children)
+            bind: root.refresh()
+
+            PrimaryButton:
+                text: "Back"
+                size_hint: 1, None
+                height: 30
+                on_release:
+                    root.refresh()
+                    app.root.current = "Main"
 
 
 <DatabaseManager>:

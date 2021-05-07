@@ -1,6 +1,10 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivi_custom.popup_box import PopupBox as Popup
+from kivi_custom.widgets import *
+from kivy.uix.spinner import Spinner
+
 from kivy.app import StringProperty
+from kivy.properties import NumericProperty
 
 from database.realtime_handler import Handler
 from database.account import Account
@@ -9,6 +13,7 @@ from database.account import Account
 class WindowManager(ScreenManager):
     admin = StringProperty('')
     account = Account()
+    characters = []
     pass
 
 
@@ -52,6 +57,54 @@ class Authorization(Screen):
             return True
         else:
             return False
+
+    pass
+
+# CharacterBoard
+class CharacterBoard(Screen):
+
+    # This var is required because of nasty bug which throws table too high on the first open
+    # It just counts to two, to negate this effect
+    openedTimes = NumericProperty(0)
+    createdNames = []
+
+    def refresh(self):
+        character = Handler.get_data("Character")
+        self.clear()
+        self.fill(self.layout, character)
+        if self.openedTimes != 2:
+            self.openedTimes += 1
+
+    def clear(self):
+        for child in [child for child in self.layout.children]:
+            if not isinstance(child, PrimaryButton):
+                self.layout.remove_widget(child)
+        self.createdNames = []
+
+    def fill(self, layout, character):
+        for entity in character:
+            if entity['name'] not in self.createdNames:
+                s = Spinner(text=entity['name'],
+
+                            values=["Age : " + str(entity['age']),
+                                    "Traits : " + str(entity['char_trait']),
+                                    "Eyes : " + str(entity['eye_colour']),
+                                    "Hair : " + str(entity['hair_colour']),
+                                    "Money : " + str(entity['money']),
+                                    "Origin : " + str(entity['origin']),
+                                    "Profession : " + str(entity['profession']),
+                                    "Race : " + str(entity['race']),
+                                    "Gender : " + str(entity['sex']),
+                                    "Star sign : " + str(entity['star_sign']),
+                                    "Equipment : " + str(entity['equipment']),
+                                    "Weapon : " + str(entity['weapon']),
+                                    "Weight : " + str(entity['weight'])],
+
+                            height=30, size_hint=(1, None),
+
+                            background_normal = '', background_color = [90/255, 190/255, 90/255, 1])
+                layout.add_widget(s)
+                self.createdNames.append(entity['name'])
 
     pass
 

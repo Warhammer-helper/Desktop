@@ -57,6 +57,18 @@ class Handler:
             return 0
 
     @staticmethod
+    def get_data(child: str):
+        items = []
+        try:
+            database = db.child(child.capitalize()).get()
+            for entity in database.each():
+                items.append(entity.val())
+        except:
+            print(Handler.__name__ + ": something went wrong")
+            return 0
+        return items
+
+    @staticmethod
     def get_data_by_uid(request: str, child: str):
         items = []
         uid = str(request.session['uid'])
