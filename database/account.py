@@ -28,6 +28,9 @@ class Account:
     def getUsername(self):
         return str(self.user['email'])
 
+    def getUID(self):
+        return str(self.user['localId'])
+
     def login(self, email, password):
         try:
             self.user = auth.sign_in_with_email_and_password(email, password)

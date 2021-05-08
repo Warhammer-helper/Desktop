@@ -4,6 +4,9 @@ WindowManager:
 
     Authorization:
 
+    CharacterCreatePrimary:
+    CharacterCreateRoll:
+    CharacterCreateProfession:
     CharacterBoard:
 
     DatabaseManager:
@@ -83,8 +86,14 @@ WindowManager:
                 style: 'bold'
             PrimaryButton:
                 text: "New"
+                on_release:
+                    app.root.current = "CharacterCreatePrimary"
+                    root.manager.transition.direction = "down"
             PrimaryButton:
                 text: "Roll"
+                on_release:
+                    app.root.current = "Roll"
+                    root.manager.transition.direction = "down"
             PrimaryButton:
                 text: "Character board"
                 on_release:
@@ -106,6 +115,7 @@ WindowManager:
     registerEmail: registerEmail
     registerPassword: registerPassword
     registerPasswordConfirm: registerPasswordConfirm
+
     BoxLayout:
         orientation: "horizontal"
         size_hint: (.8, .8)
@@ -213,6 +223,257 @@ WindowManager:
                 root.manager.transition.direction = "up"
         Widget:
 
+<CharacterCreatePrimary>:
+    name: "CharacterCreatePrimary"
+
+    nameOfCharacter: nameOfCharacter
+    age: age
+    weight: weight
+    eyeColour: eyeColour
+    hairColour: hairColour
+    race: race
+    origin: origin
+    sex: sex
+    starSign: starSign
+
+    BoxLayout:
+        bind: root.setDropdowns()
+
+        GridLayout:
+            size_hint: (1,0.9)
+            cols: 2
+
+            SmallLabel:
+                text: "Name"
+                size_hint_x: .2
+            SmallTextInput:
+                id: nameOfCharacter
+                text: ""
+                size_hint_x: .8
+
+            SmallLabel:
+                text: "Age"
+                size_hint_x: .2
+            SmallTextInput:
+                id: age
+                text: ""
+                size_hint_x: .8
+
+            SmallLabel:
+                text: "Weight"
+                size_hint_x: .2
+            SmallTextInput:
+                id: weight
+                text: ""
+                size_hint_x: .8
+
+            SmallLabel:
+                text: "Eye colour"
+                size_hint_x: .2
+            SmallTextInput:
+                id: eyeColour
+                text: ""
+                size_hint_x: .8
+
+            SmallLabel:
+                text: "Hair colour"
+                size_hint_x: .2
+            SmallTextInput:
+                id: hairColour
+                text: ""
+                size_hint_x: .8
+
+            Widget:
+                size_hint_x: 0
+            Spinner:
+                id: race
+                text: "Race"
+                on_text:
+                    root.manager.screens[3].clearBoxes()
+                    root.manager.screens[4].setDropdowns()
+                    root.manager.screens[4].clearBoxes()
+                size_hint_x: 1
+
+            BigLabel:
+                text: "Origin"
+                size_hint_x: .2
+            BigTextInput:
+                id: origin
+                text: ""
+                size_hint_x: .8
+
+            Widget:
+                size_hint_x: 0
+            Spinner:
+                id: sex
+                text: "Gender"
+                size_hint_x: 1
+
+            Widget:
+                size_hint_x: 0
+            Spinner:
+                id: starSign
+                text: "Star sign"
+                size_hint_x: 1
+
+        GridLayout:
+            size_hint: (1,0.1)
+            cols: 2
+
+            PrimaryButton:
+                text: "Go back"
+                size_hint: (.2,.1)
+                on_release:
+                    app.root.current = "Main"
+                    root.manager.transition.direction = "up"
+
+            SubmitButton:
+                text: "Next"
+                pos_hint: {'center_x': 0.5}
+                size_hint: (.2,.1)
+                on_press: root.press()
+
+<CharacterCreateRoll>:
+    name: "CharacterCreateRoll"
+
+    primaryStatistics: primaryStatistics
+    secondaryStatistics: secondaryStatistics
+
+    BoxLayout:
+        BoxLayout:
+            size_hint: (1,0.1)
+
+            Label:
+                text: "Character statistics"
+                underscore: True
+                font_size: 48
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: 1, 0.2
+            disabled: True
+
+            BoxLayout:
+                orientation: "horizontal"
+                id: primaryStatistics
+
+            BoxLayout:
+                orientation: "horizontal"
+                id: secondaryStatistics
+
+        PrimaryButton:
+            size_hint: 1, 0.6
+            text: "REROLL"
+            font_size: 64
+            on_release:
+                root.setBoxes()
+
+        GridLayout:
+            size_hint: (1,0.1)
+            cols: 2
+
+            PrimaryButton:
+                text: "Go back"
+                size_hint: (.2,.1)
+                on_release:
+                    app.root.current = "CharacterCreatePrimary"
+                    root.manager.transition.direction = "right"
+
+            SubmitButton:
+                text: "Next"
+                pos_hint: {'center_x': 0.5}
+                size_hint: (.2,.1)
+                on_press: root.press()
+
+<CharacterCreateProfession>:
+    name: "CharacterCreateProfession"
+
+    profession: profession
+
+    description: description
+    equipment: equipment
+    weapon: weapon
+    armor: armor
+    primaryStatistics: primaryStatistics
+    secondaryStatistics: secondaryStatistics
+
+
+    BoxLayout:
+
+        BoxLayout:
+            size_hint: (1,0.1)
+
+            Spinner:
+                id: profession
+                text: "Profession"
+                on_text: root.setBoxes()
+                size_hint_x: 1
+
+        GridLayout:
+            size_hint: (1,0.6)
+            cols: 2
+
+            SBigLabel:
+                text: "Description"
+                size_hint_x: .2
+            SBigTextInput:
+                id: description
+                size_hint_x: .8
+                disabled: True
+
+            SmallLabel:
+                text: "Equipment"
+                size_hint_x: .2
+            SmallTextInput:
+                id: equipment
+                size_hint_x: .8
+                disabled: True
+
+            SmallLabel:
+                text: "Weapon"
+                size_hint_x: .2
+            SmallTextInput:
+                id: weapon
+                size_hint_x: .8
+                disabled: True
+
+            SmallLabel:
+                text: "Armor"
+                size_hint_x: .2
+            SmallTextInput:
+                id: armor
+                size_hint_x: .8
+                disabled: True
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: 1, 0.2
+            disabled: True
+
+            BoxLayout:
+                orientation: "horizontal"
+                id: primaryStatistics
+
+            BoxLayout:
+                orientation: "horizontal"
+                id: secondaryStatistics
+
+        GridLayout:
+            size_hint: (1,0.1)
+            cols: 2
+
+            PrimaryButton:
+                text: "Go back"
+                size_hint: (.2,.1)
+                on_release:
+                    app.root.current = "CharacterCreateRoll"
+                    root.manager.transition.direction = "right"
+
+            SubmitButton:
+                text: "Submit"
+                pos_hint: {'center_x': 0.5}
+                size_hint: (.2,.1)
+                on_press: root.press()
 
 <CharacterBoard>:
     name: "CharacterBoard"
@@ -251,7 +512,7 @@ WindowManager:
             size_hint: (1,0.1)
 
         GridLayout:
-            cols: 3
+            cols: 2
             size_hint: (1,0.9)
 
             PrimaryButton:
@@ -281,6 +542,19 @@ WindowManager:
                 on_release:
                     app.root.current = "CStarSign"
                     root.manager.transition.direction = "left"
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: (1, .12)
+
+            PrimaryButton:
+                text: "Back"
+                size_hint: (None, None)
+                height: 50
+                width: 100
+                on_release:
+                    app.root.current = "Main"
+                    root.manager.transition.direction = "up"
 
 
 <CreateRace>:

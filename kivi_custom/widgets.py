@@ -18,6 +18,13 @@ class BigTextInput(TextInput):
         self.height = 112
         self.multiline = True
 
+class SBigTextInput(TextInput):
+    def __init__(self, **kwargs):
+        super(SBigTextInput, self).__init__(**kwargs)
+        self.size_hint = (.8, None)
+        self.height = 224
+        self.multiline = True
+
 
 class SmallLabel(Label):
     def __init__(self, **kwargs):
@@ -31,6 +38,12 @@ class BigLabel(Label):
         super(BigLabel, self).__init__(**kwargs)
         self.size_hint = (.2, None)
         self.height = 112
+
+class SBigLabel(Label):
+    def __init__(self, **kwargs):
+        super(SBigLabel, self).__init__(**kwargs)
+        self.size_hint = (.2, None)
+        self.height = 224
 
 
 class PrimaryButton(Button):
