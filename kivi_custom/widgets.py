@@ -1,6 +1,7 @@
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from  kivy.uix.button import Button
+from kivy.uix.video import Video
 
 
 class SmallTextInput(TextInput):
@@ -65,3 +66,9 @@ class DeleteButton(Button):
         super(DeleteButton, self).__init__(**kwargs)
         self.background_normal = ''
         self.background_color = [255/255, 0/255, 0/255, 1]
+
+
+class IntroVideo(Video):
+    def __init__(self, **kwargs):
+        super(IntroVideo, self).__init__(**kwargs)
+        self.source = 'assets/intro.mp4'

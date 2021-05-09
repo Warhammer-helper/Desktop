@@ -1,5 +1,6 @@
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.uix.spinner import Spinner
+from kivy.uix.screenmanager import WipeTransition
 
 from kivi_custom.popup_box import PopupBox as Popup
 from kivi_custom.widgets import *
@@ -18,6 +19,21 @@ class WindowManager(ScreenManager):
 
 
 pass
+
+# Intro
+class Intro(Screen):
+
+    video = IntroVideo(play = True)
+
+    def load(self):
+        self.video.id = 'lame'
+        self.layout.add_widget(self.video)
+        pass
+
+    def press(self, screen):
+        self.manager.transition = FadeTransition()
+        self.manager.current = screen
+        self.manager.transition = SlideTransition()
 
 
 # Main menu
@@ -120,16 +136,17 @@ class CharacterCreateRoll(Screen):
     secondary_statistics = ""
 
     def press(self):
-        self.manager.transition.direction = "left"
-        self.manager.current = "CharacterCreateProfession"
+        if self.filledCorrectly():
+            self.manager.transition.direction = "left"
+            self.manager.current = "CharacterCreateProfession"
 
     def clearBoxes(self):
         WidgetsCreator.clearStatisticsWidget(self.primaryStatistics,
                                              self.secondaryStatistics)
 
     def setBoxes(self):
-        self.primary_statistics = WidgetsCreator.getMergedPrimary(self.manager.screens[2].ids.race.text)
-        self.secondary_statistics = WidgetsCreator.getMergedSecondary(self.manager.screens[2].ids.race.text,
+        self.primary_statistics = WidgetsCreator.getMergedPrimary(self.manager.screens[3].ids.race.text)
+        self.secondary_statistics = WidgetsCreator.getMergedSecondary(self.manager.screens[3].ids.race.text,
                                                                       self.primary_statistics)
 
         WidgetsCreator.setCharacterStatisticsWidget(self.primaryStatistics,
@@ -139,6 +156,14 @@ class CharacterCreateRoll(Screen):
 
     pass
 
+    def filledCorrectly(self):
+        if (self.primary_statistics == "" or
+            self.secondary_statistics == ""):
+            Popup.display_info("Please roll for your character statistics")
+            return False
+        else:
+            return True
+
 
 class CharacterCreateProfession(Screen):
     professions = Handler.get_data("Professions")
@@ -146,17 +171,17 @@ class CharacterCreateProfession(Screen):
     def press(self):
         if self.filledCorrectly():
 
-            data = {'name': self.manager.screens[2].nameOfCharacter.text,
-                    'age': self.manager.screens[2].age.text,
-                    'weight': self.manager.screens[2].weight.text,
-                    'eye_colour': self.manager.screens[2].eyeColour.text,
-                    'hair_colour': self.manager.screens[2].hairColour.text,
-                    'race': self.manager.screens[2].race.text,
-                    'origin': self.manager.screens[2].origin.text,
-                    'sex': self.manager.screens[2].sex.text,
-                    'star_sign': self.manager.screens[2].starSign.text,
-                    'primary_statistics': self.manager.screens[3].primary_statistics,
-                    'secondary_statistics': self.manager.screens[3].secondary_statistics,
+            data = {'name': self.manager.screens[3].nameOfCharacter.text,
+                    'age': self.manager.screens[3].age.text,
+                    'weight': self.manager.screens[3].weight.text,
+                    'eye_colour': self.manager.screens[3].eyeColour.text,
+                    'hair_colour': self.manager.screens[3].hairColour.text,
+                    'race': self.manager.screens[3].race.text,
+                    'origin': self.manager.screens[3].origin.text,
+                    'sex': self.manager.screens[3].sex.text,
+                    'star_sign': self.manager.screens[3].starSign.text,
+                    'primary_statistics': self.manager.screens[4].primary_statistics,
+                    'secondary_statistics': self.manager.screens[4].secondary_statistics,
                     'profession': self.profession.text,
                     'equipment': self.equipment.text,
                     'weapon': self.weapon.text,
@@ -166,8 +191,8 @@ class CharacterCreateProfession(Screen):
             else:
                 data["userUID"] = self.manager.account.getUID()
             Handler.push_data(data, 'Character')
-            self.manager.screens[2].clearBoxes()
             self.manager.screens[3].clearBoxes()
+            self.manager.screens[4].clearBoxes()
             self.clearBoxes()
 
             self.manager.transition.direction = "up"
@@ -216,7 +241,7 @@ class CharacterCreateProfession(Screen):
 
     def raceAllowance(self, availableFor):
         # Current race
-        race = self.manager.screens[2].ids.race.text
+        race = self.manager.screens[3].ids.race.text
         if race != "Race":
             index = 0
             # Get index
@@ -259,29 +284,28 @@ class CharacterBoard(Screen):
 
     def fill(self, layout, character):
         for entity in character:
-            if entity['name'] not in self.createdNames:
-                s = Spinner(text=entity['name'],
+            s = Spinner(text= entity['name'] + " the " + entity['profession'],
 
-                            values=["Age : " + str(entity['age']),
-                                    "Statistics primary : " + str(entity['primary_statistics']),
-                                    "Statistics secondary : " + str(entity['secondary_statistics']),
-                                    "Eyes : " + str(entity['eye_colour']),
-                                    "Hair : " + str(entity['hair_colour']),
-                                    "Origin : " + str(entity['origin']),
-                                    "Profession : " + str(entity['profession']),
-                                    "Race : " + str(entity['race']),
-                                    "Gender : " + str(entity['sex']),
-                                    "Star sign : " + str(entity['star_sign']),
-                                    "Equipment : " + str(entity['equipment']),
-                                    "Weapon : " + str(entity['weapon']),
-                                    "Armor : " + str(entity['armor']),
-                                    "Weight : " + str(entity['weight'])],
+                        values=["Age : " + str(entity['age']),
+                                "Statistics primary : " + str(entity['primary_statistics']),
+                                "Statistics secondary : " + str(entity['secondary_statistics']),
+                                "Eyes : " + str(entity['eye_colour']),
+                                "Hair : " + str(entity['hair_colour']),
+                                "Origin : " + str(entity['origin']),
+                                "Profession : " + str(entity['profession']),
+                                "Race : " + str(entity['race']),
+                                "Gender : " + str(entity['sex']),
+                                "Star sign : " + str(entity['star_sign']),
+                                "Equipment : " + str(entity['equipment']),
+                                "Weapon : " + str(entity['weapon']),
+                                "Armor : " + str(entity['armor']),
+                                "Weight : " + str(entity['weight'])],
 
-                            height=30, size_hint=(1, None),
+                        height=30, size_hint=(1, None),
 
-                            background_normal='', background_color=[90 / 255, 190 / 255, 90 / 255, 1])
-                layout.add_widget(s)
-                self.createdNames.append(entity['name'])
+                        background_normal='', background_color=[90 / 255, 190 / 255, 90 / 255, 1])
+            layout.add_widget(s)
+            self.createdNames.append(entity['name'])
 
     pass
 

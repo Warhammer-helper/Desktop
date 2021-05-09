@@ -1,5 +1,7 @@
 WindowManager:
 
+    Intro:
+
     MainMenu:
 
     Authorization:
@@ -30,6 +32,21 @@ WindowManager:
 <PopupBox>:
     text: "%s"%root.textContent
 
+<Intro>:
+    name: "Intro"
+
+    layout: layout
+
+    BoxLayout:
+        size_hint: (1, 1)
+        id: layout
+        bind: root.load()
+
+    Button:
+        size_hint: (1, 1)
+        opacity: 0
+        on_release:
+            root.press("Main")
 
 <MainMenu>:
     name: "Main"
@@ -291,9 +308,9 @@ WindowManager:
                 id: race
                 text: "Race"
                 on_text:
-                    root.manager.screens[3].clearBoxes()
-                    root.manager.screens[4].setDropdowns()
                     root.manager.screens[4].clearBoxes()
+                    root.manager.screens[5].setDropdowns()
+                    root.manager.screens[5].clearBoxes()
                 size_hint_x: 1
 
             BigLabel:
