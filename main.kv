@@ -11,6 +11,8 @@ WindowManager:
     CharacterCreateProfession:
     CharacterBoard:
 
+    DiceRoller:
+
     DatabaseManager:
     CreateRace:
     CreateProfession:
@@ -109,13 +111,13 @@ WindowManager:
             PrimaryButton:
                 text: "Roll"
                 on_release:
-                    app.root.current = "Roll"
-                    root.manager.transition.direction = "down"
+                    app.root.current = "DiceRoller"
+                    root.manager.transition.direction = "left"
             PrimaryButton:
                 text: "Character board"
                 on_release:
                     app.root.current = "CharacterBoard"
-                    root.manager.transition.direction = "down"
+                    root.manager.transition.direction = "up"
             PrimaryButton:
                 opacity: 0 if root.manager.admin == '' else 1
                 disabled: 1 if root.manager.admin == '' else 0
@@ -515,6 +517,73 @@ WindowManager:
                 on_release:
                     root.refresh()
                     app.root.current = "Main"
+                    root.manager.transition.direction = "down"
+
+<DiceRoller>:
+    name: "DiceRoller"
+
+    diceTable: diceTable
+    sliderAmount: sliderAmount
+    sliderSides: sliderSides
+    resultLabel: resultLabel
+
+    BoxLayout:
+        BoxLayout:
+            size_hint: (1,0.05)
+            orientation: 'horizontal'
+
+            Label:
+                text: "Amount : " + str(root.amount)
+                font_size: 32
+
+            Slider:
+                id: sliderAmount
+                min: 1
+                max: 15
+                step: 1
+                orientation: 'horizontal'
+                on_touch_move:
+                    root.update()
+
+            Label:
+                text: "Sides : " + str(root.sides)
+                font_size: 32
+
+            Slider:
+                id: sliderSides
+                min: 4
+                max: 100
+                step: 1
+                orientation: 'horizontal'
+                on_touch_move:
+                    root.update()
+
+        GridLayout:
+            id: diceTable
+            size_hint: (1,0.8)
+            cols: 5
+
+        Label:
+            id: resultLabel
+            size_hint: (1,0.05)
+
+        GridLayout:
+            size_hint: (1,0.1)
+            cols: 2
+
+            PrimaryButton:
+                text: "Go back"
+                size_hint: (.2,.1)
+                on_release:
+                    app.root.current = "Main"
+                    root.manager.transition.direction = "right"
+
+            SubmitButton:
+                text: "Roll!"
+                pos_hint: {'center_x': 0.5}
+                size_hint: (.2,.1)
+                on_press: root.press()
+
 
 
 <DatabaseManager>:

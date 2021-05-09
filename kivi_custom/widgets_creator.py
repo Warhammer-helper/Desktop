@@ -1,11 +1,30 @@
 from kivi_custom.widgets import *
+from kivy.uix.gridlayout import GridLayout
 
 from random import randint
 
 from database.realtime_handler import Handler
 
 
-class Rolls:
+class DiceManager:
+
+    def roll(self, id, amount, d):
+        self.clear(self, id)
+        result = 0
+
+        for i in range(0, amount):
+            number = randint(1, d)
+            result += number
+            dice = Dice(text = str(number))
+            id.add_widget(dice)
+
+        return str(result)
+
+    def clear(self, id):
+        id.clear_widgets()
+
+
+class CharacterRolls:
 
     @staticmethod
     def statRoll():
@@ -101,7 +120,7 @@ class WidgetsCreator:
         stats = ""
         for entity in Handler.get_data("Races"):
             if entity["name"] == race_name:
-               stats = int(Rolls.statRoll()) + int(entity["primaryStatistics"])
+               stats = int(CharacterRolls.statRoll()) + int(entity["primaryStatistics"])
         stats = str(stats)
         while len(stats) < 16:
             stats = "0" + stats
@@ -115,9 +134,9 @@ class WidgetsCreator:
                 stats = entity["secondaryStatistics"]
         # Rulebook changes
         addition = "00" \
-                   + Rolls.vitalityRoll(race_name) + "0" \
+                   + CharacterRolls.vitalityRoll(race_name) + "0" \
                    + primary[4] + "0" \
-                   + primary[6] + "000000" + Rolls.fpRoll(race_name)
+                   + primary[6] + "000000" + CharacterRolls.fpRoll(race_name)
         stats = int(stats) + int(addition)
 
         stats = str(stats)

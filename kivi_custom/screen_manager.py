@@ -4,7 +4,8 @@ from kivy.uix.screenmanager import WipeTransition
 
 from kivi_custom.popup_box import PopupBox as Popup
 from kivi_custom.widgets import *
-from kivi_custom.widgets_creator import WidgetsCreator
+from kivi_custom.widgets_creator import *
+from kivi_custom.sounds import *
 
 from kivy.app import StringProperty
 from kivy.properties import NumericProperty
@@ -308,6 +309,27 @@ class CharacterBoard(Screen):
             self.createdNames.append(entity['name'])
 
     pass
+
+# Dice roll
+
+class DiceRoller(Screen):
+
+    dm = DiceManager
+
+    amount =  StringProperty('1')
+    sides = StringProperty('4')
+
+    result = StringProperty('')
+
+    def update(self):
+        self.amount = str(self.sliderAmount.value)
+        self.sides = str(self.sliderSides.value)
+
+    def press(self):
+        Sounds.playSingle('assets/DiceRoll.mp3')
+        self.resultLabel.text = ("Result : " +
+                                 self.dm.roll(self.dm, self.diceTable, int(self.amount), int(self.sides)))
+
 
 
 # Admin panel
