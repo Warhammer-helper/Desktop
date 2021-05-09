@@ -12,10 +12,11 @@ from kivy.properties import NumericProperty
 
 from database.realtime_handler import Handler
 from database.account import Account
+from pdf_generator.example import Creator
 
 
 class WindowManager(ScreenManager):
-    admin = StringProperty('')
+    admin = StringProperty('a')
     account = Account()
 
 
@@ -334,6 +335,12 @@ class DiceRoller(Screen):
 
 # Admin panel
 class DatabaseManager(Screen):
+
+    creator = Creator()
+
+    def press(self):
+        self.creator.createPDF(Handler.get_data('Character')[0])
+
     pass
 
 

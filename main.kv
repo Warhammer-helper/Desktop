@@ -591,13 +591,15 @@ WindowManager:
 
     BoxLayout:
 
-        Label:
+        Button:
             text: "Database Manager"
             font_size: 46
             text_size: self.size
             halign: 'center'
             valign: 'middle'
             size_hint: (1,0.1)
+            on_release:
+                root.press()
 
         GridLayout:
             cols: 2
