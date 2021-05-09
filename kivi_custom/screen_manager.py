@@ -1,31 +1,34 @@
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.uix.spinner import Spinner
 from kivy.uix.screenmanager import WipeTransition
+from kivy.uix.boxlayout import BoxLayout
 
 from kivi_custom.popup_box import PopupBox as Popup
 from kivi_custom.widgets import *
-from kivi_custom.widgets_creator import *
+from kivi_custom.screen_manager_helper import *
 from kivi_custom.sounds import *
 
 from kivy.app import StringProperty
 from kivy.properties import NumericProperty
+from functools import partial
 
 from database.realtime_handler import Handler
 from database.account import Account
-from pdf_generator.example import Creator
+from pdf.generator import Creator
 
 
 class WindowManager(ScreenManager):
-    admin = StringProperty('a')
+    admin = StringProperty('')
     account = Account()
+    creatorpdf = Creator()
 
 
 pass
 
+
 # Intro
 class Intro(Screen):
-
-    video = IntroVideo(play = True)
+    video = IntroVideo(play=True)
 
     def load(self):
         self.video.id = 'lame'
@@ -160,7 +163,7 @@ class CharacterCreateRoll(Screen):
 
     def filledCorrectly(self):
         if (self.primary_statistics == "" or
-            self.secondary_statistics == ""):
+                self.secondary_statistics == ""):
             Popup.display_info("Please roll for your character statistics")
             return False
         else:
@@ -190,8 +193,12 @@ class CharacterCreateProfession(Screen):
                     'armor': self.armor.text}
             if self.manager.account.user == None:
                 data["userUID"] = ""
+                Popup.display_info("Character created successfully!")
             else:
                 data["userUID"] = self.manager.account.getUID()
+                Popup.display_info("Character created successfully!\n"
+                                   "You can now download it in your\n"
+                                   "account management screen!")
             Handler.push_data(data, 'Character')
             self.manager.screens[3].clearBoxes()
             self.manager.screens[4].clearBoxes()
@@ -266,17 +273,12 @@ pass
 
 # Character board
 class CharacterBoard(Screen):
-    # This var is required because of nasty bug which throws table too high on the first open
-    # It just counts to two, to negate this effect
-    openedTimes = NumericProperty(0)
     createdNames = []
 
     def refresh(self):
         character = Handler.get_data("Character")
         self.clear()
         self.fill(self.layout, character)
-        if self.openedTimes != 2:
-            self.openedTimes += 1
 
     def clear(self):
         for child in [child for child in self.layout.children]:
@@ -286,8 +288,7 @@ class CharacterBoard(Screen):
 
     def fill(self, layout, character):
         for entity in character:
-            s = Spinner(text= entity['name'] + " the " + entity['profession'],
-
+            s = Spinner(text=entity['name'] + " the " + entity['profession'],
                         values=["Age : " + str(entity['age']),
                                 "Statistics primary : " + str(entity['primary_statistics']),
                                 "Statistics secondary : " + str(entity['secondary_statistics']),
@@ -302,22 +303,83 @@ class CharacterBoard(Screen):
                                 "Weapon : " + str(entity['weapon']),
                                 "Armor : " + str(entity['armor']),
                                 "Weight : " + str(entity['weight'])],
-
                         height=30, size_hint=(1, None),
-
                         background_normal='', background_color=[90 / 255, 190 / 255, 90 / 255, 1])
             layout.add_widget(s)
             self.createdNames.append(entity['name'])
 
     pass
 
+
+class CharacterBoardUser(Screen):
+    createdNames = []
+
+    def deleteChar(self, entity, *args):
+        Handler.delete_data(entity, "Character")
+        Popup.display_info("Character has been deleted")
+        self.refresh()
+
+    def downloadChar(self, entity, *args):
+        self.manager.creatorpdf.createPDF(entity)
+        Popup.display_info("Character has been\ndownloaded as pdf\nin to your program\nlocation")
+
+    def refresh(self):
+        character = Handler.get_data("Character")
+        self.clear()
+        self.fill(self.layout, character)
+
+    def clear(self):
+        for child in [child for child in self.layout.children]:
+            if not isinstance(child, PrimaryButton):
+                self.layout.remove_widget(child)
+        self.createdNames = []
+
+    def fill(self, layout, character):
+        if self.manager.account.userNotLoggedIn():
+            pass
+        else:
+            for entity in character:
+                if entity['userUID'] == self.manager.account.getUID():
+                    s = Spinner(text=entity['name'] + " the " + entity['profession'],
+                                values=["Age : " + str(entity['age']),
+                                        "Statistics primary : " + str(entity['primary_statistics']),
+                                        "Statistics secondary : " + str(entity['secondary_statistics']),
+                                        "Eyes : " + str(entity['eye_colour']),
+                                        "Hair : " + str(entity['hair_colour']),
+                                        "Origin : " + str(entity['origin']),
+                                        "Profession : " + str(entity['profession']),
+                                        "Race : " + str(entity['race']),
+                                        "Gender : " + str(entity['sex']),
+                                        "Star sign : " + str(entity['star_sign']),
+                                        "Equipment : " + str(entity['equipment']),
+                                        "Weapon : " + str(entity['weapon']),
+                                        "Armor : " + str(entity['armor']),
+                                        "Weight : " + str(entity['weight'])],
+                                height=30, size_hint=(0.8, None),
+                                background_normal='', background_color=[90 / 255, 190 / 255, 90 / 255, 1])
+                    dlb = Button(text="Delete",
+                                 height=30, size_hint=(0.1, None))
+                    dwb = Button(text="Download",
+                                 height=30, size_hint=(0.1, None))
+                    dlb.bind(on_release=partial(self.deleteChar, entity))
+                    dwb.bind(on_release=partial(self.downloadChar, entity))
+
+                    box = BoxLayout(orientation="horizontal")
+                    box.add_widget(s)
+                    box.add_widget(dlb)
+                    box.add_widget(dwb)
+
+                    layout.add_widget(box)
+                self.createdNames.append(entity['name'])
+
+    pass
+
+
 # Dice roll
-
 class DiceRoller(Screen):
-
     dm = DiceManager
 
-    amount =  StringProperty('1')
+    amount = StringProperty('1')
     sides = StringProperty('4')
 
     result = StringProperty('')
@@ -332,15 +394,8 @@ class DiceRoller(Screen):
                                  self.dm.roll(self.dm, self.diceTable, int(self.amount), int(self.sides)))
 
 
-
 # Admin panel
 class DatabaseManager(Screen):
-
-    creator = Creator()
-
-    def press(self):
-        self.creator.createPDF(Handler.get_data('Character')[0])
-
     pass
 
 

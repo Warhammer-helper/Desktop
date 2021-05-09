@@ -1,6 +1,6 @@
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
-from  kivy.uix.button import Button
+from kivy.uix.button import Button
 from kivy.uix.video import Video
 from kivy.graphics import *
 
@@ -19,6 +19,7 @@ class BigTextInput(TextInput):
         self.size_hint = (.8, None)
         self.height = 112
         self.multiline = True
+
 
 class SBigTextInput(TextInput):
     def __init__(self, **kwargs):
@@ -41,6 +42,7 @@ class BigLabel(Label):
         self.size_hint = (.2, None)
         self.height = 112
 
+
 class SBigLabel(Label):
     def __init__(self, **kwargs):
         super(SBigLabel, self).__init__(**kwargs)
@@ -52,21 +54,21 @@ class PrimaryButton(Button):
     def __init__(self, **kwargs):
         super(PrimaryButton, self).__init__(**kwargs)
         self.background_normal = ''
-        self.background_color = [90/255, 190/255, 90/255, 1]
+        self.background_color = [90 / 255, 190 / 255, 90 / 255, 1]
 
 
 class SubmitButton(Button):
     def __init__(self, **kwargs):
         super(SubmitButton, self).__init__(**kwargs)
         self.background_normal = ''
-        self.background_color = [3/255, 182/255, 252/255, 1]
+        self.background_color = [3 / 255, 182 / 255, 252 / 255, 1]
 
 
 class DeleteButton(Button):
     def __init__(self, **kwargs):
         super(DeleteButton, self).__init__(**kwargs)
         self.background_normal = ''
-        self.background_color = [255/255, 0/255, 0/255, 1]
+        self.background_color = [255 / 255, 0 / 255, 0 / 255, 1]
 
 
 class Dice(Label):
@@ -78,12 +80,14 @@ class Dice(Label):
         self.size_hint = (None, None)
         self.size = (160, 160)
 
+
 class DiceCanvas(Label):
     def __init__(self, **kwargs):
         super(DiceCanvas, self).__init__(**kwargs)
         with self.canvas:
             Color(128 / 255, 128 / 255, 128 / 255, 1)
             Rectangle(size=self.size, pos=self.pos)
+
 
 class IntroVideo(Video):
     def __init__(self, **kwargs):

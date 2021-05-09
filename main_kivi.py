@@ -3,18 +3,21 @@ from kivy.lang import Builder
 from kivi_custom import widgets
 from kivi_custom import screen_manager
 
-from kivy.uix.button import Button
 from kivy.core.window import Window
-from kivy.modules import inspector
-
+from kivy.config import Config
 
 kv_layout = Builder.load_file('main.kv')
 
 
 class MyApp(App):
+
     def build(self):
-        button = Button(text="Test")
-        inspector.create_inspector(Window, button)
+        Window.size = (960, 540)
+        Window.minimum_width = 960
+        Window.minimum_height = 540
+        Config.set('graphics', 'resizable', False)
+        Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
         return kv_layout
 
 

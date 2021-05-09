@@ -20,7 +20,7 @@ class Account:
     user = None
 
     def userNotLoggedIn(self):
-        if self.user == None:
+        if self.user is None:
             return True
         else:
             return False
@@ -47,16 +47,16 @@ class Account:
                 Popup.display_error("Invalid password input")
             return False
 
-    def register(self, email, password, passwordConfirm):
+    def register(self, email, password, password_confirm):
         try:
-            if (password == passwordConfirm):
+            if password == password_confirm:
                 auth.create_user_with_email_and_password(email, password)
                 Popup.display_info("Registration was successful! You can try to log in now")
                 return True
             else:
                 Popup.display_error("Invalid password confirmation\n" +
                                     "Pass: " + password +
-                                    "Conf: " + passwordConfirm)
+                                    "Conf: " + password_confirm)
                 return False
         except requests.HTTPError as e:
             error_json = e.args[1]

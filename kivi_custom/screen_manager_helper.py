@@ -15,7 +15,7 @@ class DiceManager:
         for i in range(0, amount):
             number = randint(1, d)
             result += number
-            dice = Dice(text = str(number))
+            dice = Dice(text=str(number))
             id.add_widget(dice)
 
         return str(result)
@@ -42,7 +42,7 @@ class CharacterRolls:
         number = randint(0, 2)
         for entity in Handler.get_data("Races"):
             if entity["name"] == race_name:
-               fp += "0" + entity['fpRoll'][number]
+                fp += "0" + entity['fpRoll'][number]
         return fp
 
     @staticmethod
@@ -51,14 +51,15 @@ class CharacterRolls:
         number = randint(0, 3)
         for entity in Handler.get_data("Races"):
             if entity["name"] == race_name:
-                vitality += (entity['wRoll'][number*2] + entity['wRoll'][number*2+1])
+                vitality += (entity['wRoll'][number * 2] + entity['wRoll'][number * 2 + 1])
         return vitality
+
 
 class WidgetsCreator:
 
     @staticmethod
     def clearStatisticsWidget(first_grid,
-                            second_grid):
+                              second_grid):
         first_grid.clear_widgets()
         second_grid.clear_widgets()
 
@@ -74,9 +75,9 @@ class WidgetsCreator:
         secondary_reformated = []
         for i in range(0, 8):
             primary_reformated.append(primary_statistics[i * 2] +
-                                     primary_statistics[(i * 2) + 1])
+                                      primary_statistics[(i * 2) + 1])
             secondary_reformated.append(secondary_statistics[i * 2] +
-                                       secondary_statistics[(i * 2) + 1])
+                                        secondary_statistics[(i * 2) + 1])
 
         # Create widgets
         first_grid.clear_widgets()
@@ -101,9 +102,9 @@ class WidgetsCreator:
         primary_statistics = str(primary_statistics)
         for i in range(0, 8):
             primary_reformated.append(primary_statistics[i * 2] +
-                                     primary_statistics[(i * 2) + 1])
+                                      primary_statistics[(i * 2) + 1])
             secondary_reformated.append(secondary_statistics[i * 2] +
-                                       secondary_statistics[(i * 2) + 1])
+                                        secondary_statistics[(i * 2) + 1])
 
         # Create widgets
         first_grid.clear_widgets()
@@ -120,7 +121,7 @@ class WidgetsCreator:
         stats = ""
         for entity in Handler.get_data("Races"):
             if entity["name"] == race_name:
-               stats = int(CharacterRolls.statRoll()) + int(entity["primaryStatistics"])
+                stats = int(CharacterRolls.statRoll()) + int(entity["primaryStatistics"])
         stats = str(stats)
         while len(stats) < 16:
             stats = "0" + stats
@@ -144,12 +145,3 @@ class WidgetsCreator:
             stats = "0" + stats
 
         return stats
-
-
-
-
-
-
-
-
-

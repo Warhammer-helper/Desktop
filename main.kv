@@ -10,6 +10,7 @@ WindowManager:
     CharacterCreateRoll:
     CharacterCreateProfession:
     CharacterBoard:
+    CharacterBoardUser:
 
     DiceRoller:
 
@@ -40,6 +41,8 @@ WindowManager:
     layout: layout
 
     BoxLayout:
+        padding: 0
+        spacing: 0
         size_hint: (1, 1)
         id: layout
         bind: root.load()
@@ -76,7 +79,8 @@ WindowManager:
                 opacity: 1 if (root.text != '') else 0
                 disabled: False if (root.text != '') else True
                 on_release:
-                    root.logout() if (root.text != '') else root.changeScreen("Authorization")
+                    root.changeScreen("CharacterBoardUser")
+                    root.manager.screens[7].refresh()
                     root.manager.transition.direction = "down"
             PrimaryButton:
                 text: "Log Out" if (root.text != '') else "Log In"
@@ -86,6 +90,7 @@ WindowManager:
                     root.manager.transition.direction = "down"
         BoxLayout:
             size_hint: (1,.9)
+            pos_hint: {'center_x': .5, 'center_y': .5}
 
             canvas.before:
                 Color:
@@ -95,6 +100,8 @@ WindowManager:
                     pos: self.pos
 
             Label:
+                size_hint: (.5,1)
+                pos_hint: {'center_x': .5, 'center_y': .5}
                 text: 'Warhammer\nHelper'
                 halign: 'center'
                 valign: 'middle'
@@ -103,22 +110,34 @@ WindowManager:
                 font_size: 32
 
                 style: 'bold'
+
             PrimaryButton:
+                size_hint: (.5,1)
+                pos_hint: {'center_x': .5, 'center_y': .5}
                 text: "New"
                 on_release:
                     app.root.current = "CharacterCreatePrimary"
                     root.manager.transition.direction = "down"
+
             PrimaryButton:
+                size_hint: (.5,1)
+                pos_hint: {'center_x': .5, 'center_y': .5}
                 text: "Roll"
                 on_release:
                     app.root.current = "DiceRoller"
                     root.manager.transition.direction = "left"
+
             PrimaryButton:
+                size_hint: (.5,1)
+                pos_hint: {'center_x': .5, 'center_y': .5}
                 text: "Character board"
                 on_release:
                     app.root.current = "CharacterBoard"
                     root.manager.transition.direction = "up"
+
             PrimaryButton:
+                size_hint: (.5,1)
+                pos_hint: {'center_x': .5, 'center_y': .5}
                 opacity: 0 if root.manager.admin == '' else 1
                 disabled: 1 if root.manager.admin == '' else 0
                 text: "Admin Panel"
@@ -136,111 +155,118 @@ WindowManager:
     registerPasswordConfirm: registerPasswordConfirm
 
     BoxLayout:
-        orientation: "horizontal"
-        size_hint: (.8, .8)
-        pos_hint: {'center_x': .5, 'center_y': .5}
+        size_hint: (1,1)
+        BoxLayout:
+            size_hint: (1, .1)
 
         BoxLayout:
-            canvas.before:
-                Color:
-                    rgba: (128/255,128/255,128/255,1)
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
+            orientation: "horizontal"
+            size_hint: (1, .8)
+            pos_hint: {'center_x': .5, 'center_y': .5}
 
-            Label:
-                text: "Log in"
-                font_size: 46
-                text_size: self.size
-                halign: 'center'
-                valign: 'middle'
-                size_hint: (1,0.2)
+            BoxLayout:
+                canvas.before:
+                    Color:
+                        rgba: (128/255,128/255,128/255,1)
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
 
-            GridLayout:
-                cols:2
+                Label:
+                    text: "Log in"
+                    font_size: 46
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    size_hint: (1,0.2)
 
-                SmallLabel:
-                    text: "Email:"
-                    size_hint_x: .3
-                SmallTextInput:
-                    id: loginEmail
-                    size_hint_x: .8
+                GridLayout:
+                    cols:2
+                    spacing: 15
 
-                SmallLabel:
-                    text: "Password:"
-                SmallTextInput:
-                    id: loginPassword
-                    allow_copy: False
-                    password: True
+                    SmallLabel:
+                        text: "Email:"
+                        size_hint_x: .3
+                    SmallTextInput:
+                        id: loginEmail
+                        size_hint_x: .8
 
-            SubmitButton:
-                text: "Submit"
-                size_hint: (0.4, 0.2)
-                pos_hint: {'center_x': 0.5}
+                    SmallLabel:
+                        text: "Password:"
+                    SmallTextInput:
+                        id: loginPassword
+                        allow_copy: False
+                        password: True
+
+                SubmitButton:
+                    text: "Submit"
+                    size_hint: (0.4, 0.2)
+                    pos_hint: {'center_x': 0.5}
+                    on_release:
+                        app.root.current = "Main" if root.submitLogin() else "Authorization"
+
+
+            BoxLayout:
+                canvas.before:
+                    Color:
+                        rgba: (128/255,128/255,128/255,1)
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+
+                Label:
+                    text: "Register"
+                    font_size: 46
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'middle'
+                    size_hint: (1,0.2)
+
+                GridLayout:
+                    cols:2
+                    spacing: 15
+
+                    SmallLabel:
+                        text: "Email:"
+                        size_hint_x: .3
+                    SmallTextInput:
+                        id: registerEmail
+                        size_hint_x: .8
+
+                    SmallLabel:
+                        text: "Password:"
+                    SmallTextInput:
+                        id: registerPassword
+                        allow_copy: False
+                        password: True
+
+                    SmallLabel:
+                        text: "Confirm\npassword:"
+                    SmallTextInput:
+                        id: registerPasswordConfirm
+                        allow_copy: False
+                        password: True
+
+                SubmitButton:
+                    text: "Submit"
+                    size_hint: (0.4, 0.2)
+                    pos_hint: {'center_x': 0.5}
+                    on_release:
+                        root.submitRegister()
+        GridLayout:
+            size_hint: (1,0.1)
+            cols: 2
+
+            PrimaryButton:
+                text: "Go back"
+                size_hint: (.2,.1)
                 on_release:
-                    app.root.current = "Main" if root.submitLogin() else "AccountCreation"
+                    app.root.current = "Main"
+                    root.manager.transition.direction = "up"
 
+            Widget:
+                size_hint: (.2,.1)
 
-        BoxLayout:
-            canvas.before:
-                Color:
-                    rgba: (128/255,128/255,128/255,1)
-                Rectangle:
-                    size: self.size
-                    pos: self.pos
-
-            Label:
-                text: "Register"
-                font_size: 46
-                text_size: self.size
-                halign: 'center'
-                valign: 'middle'
-                size_hint: (1,0.2)
-
-            GridLayout:
-                cols:2
-
-                SmallLabel:
-                    text: "Email:"
-                    size_hint_x: .3
-                SmallTextInput:
-                    id: registerEmail
-                    size_hint_x: .8
-
-                SmallLabel:
-                    text: "Password:"
-                SmallTextInput:
-                    id: registerPassword
-                    allow_copy: False
-                    password: True
-
-                SmallLabel:
-                    text: "Confirm password:"
-                SmallTextInput:
-                    id: registerPasswordConfirm
-                    allow_copy: False
-                    password: True
-
-            SubmitButton:
-                text: "Submit"
-                size_hint: (0.4, 0.2)
-                pos_hint: {'center_x': 0.5}
-                on_release:
-                    root.submitRegister()
-
-    BoxLayout:
-        orientation: "vertical"
-        size_hint: (1, 1)
-
-        PrimaryButton:
-            text: "Back"
-            size_hint: (None, None)
-            height: 50
-            width: 100
-            on_release:
-                app.root.current = "Main"
-                root.manager.transition.direction = "up"
-        Widget:
 
 <CharacterCreatePrimary>:
     name: "CharacterCreatePrimary"
@@ -502,22 +528,57 @@ WindowManager:
     layout: layout
 
     ScrollView:
-        size_hint: 1, 1
+        size_hint: (1,1)
         BoxLayout:
             id: layout
             orientation: 'vertical'
             size_hint: 1, None
-            height: sum(x.height+5 for x in self.children)-65 if root.openedTimes != 2 else sum(x.height+5 for x in self.children)
+            height: sum(x.height+5 for x in self.children)
             bind: root.refresh()
 
-            PrimaryButton:
-                text: "Back"
-                size_hint: 1, None
-                height: 30
-                on_release:
-                    root.refresh()
-                    app.root.current = "Main"
-                    root.manager.transition.direction = "down"
+    GridLayout:
+        size_hint: (1,0.1)
+        cols: 2
+
+        PrimaryButton:
+            text: "Go back"
+            size_hint: (.2,.1)
+            on_release:
+                root.refresh()
+                app.root.current = "Main"
+                root.manager.transition.direction = "down"
+
+        Widget:
+            size_hint: (.2,.1)
+
+<CharacterBoardUser>:
+    name: "CharacterBoardUser"
+
+    layout: layout
+
+    ScrollView:
+        size_hint: (1,1)
+        BoxLayout:
+            id: layout
+            orientation: 'vertical'
+            size_hint: 1, None
+            height: sum(x.height/3+5 for x in self.children)
+            bind: root.refresh()
+
+    GridLayout:
+        size_hint: (1,0.1)
+        cols: 2
+
+        PrimaryButton:
+            text: "Go back"
+            size_hint: (.2,.1)
+            on_release:
+                root.refresh()
+                app.root.current = "Main"
+                root.manager.transition.direction = "down"
+
+        Widget:
+            size_hint: (.2,.1)
 
 <DiceRoller>:
     name: "DiceRoller"
@@ -591,15 +652,13 @@ WindowManager:
 
     BoxLayout:
 
-        Button:
+        Label:
             text: "Database Manager"
             font_size: 46
             text_size: self.size
             halign: 'center'
             valign: 'middle'
             size_hint: (1,0.1)
-            on_release:
-                root.press()
 
         GridLayout:
             cols: 2

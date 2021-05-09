@@ -1,4 +1,5 @@
 import pyrebase
+from kivi_custom.popup_box import PopupBox as Popup
 
 firebaseConfig = {'apiKey': "AIzaSyBKShHcb3Kpaw8Z_57dFrmSPG2gvnW06D0",
                   'authDomain': "warhammerhelper-64ecf.firebaseapp.com",
@@ -20,7 +21,7 @@ class Handler:
             db.child(child.capitalize()).push(data)
             return 1
         except:
-            print(Handler.__name__ + ": something went wrong")
+            Popup.display_error("Something went wrong")
             return 0
 
     @staticmethod
@@ -29,7 +30,7 @@ class Handler:
             db.child(child.capitalize()).child(name.capitalize()).set(data)
             return 1
         except:
-            print(Handler.__name__ + ": something went wrong")
+            Popup.display_error("Something went wrong")
             return 0
 
     @staticmethod
@@ -41,19 +42,20 @@ class Handler:
                     db.child(child.capitalize()).child(entity.key()).update(data)
             return 1
         except:
-            print(Handler.__name__ + ": something went wrong")
+            Popup.display_error("Something went wrong")
             return 0
 
     @staticmethod
-    def delete_data(name: str, child: str):
+    def delete_data(item, child: str):
         try:
             database = db.child(child.capitalize()).get()
             for entity in database.each():
-                if (entity.val()['name'] == name):
+                if item == entity.val():
+                    print("BOOM")
                     db.child(child.capitalize()).child(entity.key()).remove()
             return 1
         except:
-            print(Handler.__name__ + ": something went wrong")
+            Popup.display_error("Something went wrong")
             return 0
 
     @staticmethod
@@ -64,20 +66,6 @@ class Handler:
             for entity in database.each():
                 items.append(entity.val())
         except:
-            print(Handler.__name__ + ": something went wrong")
-            return 0
-        return items
-
-    @staticmethod
-    def get_data_by_uid(request: str, child: str):
-        items = []
-        uid = str(request.session['uid'])
-        try:
-            database = db.child(child.capitalize()).get()
-            for entity in database.each():
-                if entity.val()['userUID'] == uid:
-                    items.append(entity.val())
-        except:
-            print(Handler.__name__ + ": something went wrong")
+            Popup.display_error("Something went wrong")
             return 0
         return items
