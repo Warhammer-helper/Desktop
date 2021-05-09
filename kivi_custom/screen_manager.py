@@ -11,9 +11,12 @@ from kivy.properties import NumericProperty
 from database.realtime_handler import Handler
 from database.account import Account
 
+
 class WindowManager(ScreenManager):
     admin = StringProperty('')
     account = Account()
+
+
 pass
 
 
@@ -86,6 +89,17 @@ class CharacterCreatePrimary(Screen):
                 pass
         return True
 
+    def clearBoxes(self):
+        self.nameOfCharacter.text = ""
+        self.age.text = ""
+        self.weight.text = ""
+        self.eyeColour.text = ""
+        self.hairColour.text = ""
+        self.race.text = "Race"
+        self.origin.text = ""
+        self.sex.text = "Gender"
+        self.starSign.text = "Star sign"
+
     def setDropdowns(self):
         sex = Handler.get_data("Sex")
         starSigns = Handler.get_data("Starsigns")
@@ -102,7 +116,6 @@ class CharacterCreatePrimary(Screen):
 
 
 class CharacterCreateRoll(Screen):
-
     primary_statistics = ""
     secondary_statistics = ""
 
@@ -112,15 +125,16 @@ class CharacterCreateRoll(Screen):
 
     def clearBoxes(self):
         WidgetsCreator.clearStatisticsWidget(self.primaryStatistics,
-                                            self.secondaryStatistics)
+                                             self.secondaryStatistics)
 
     def setBoxes(self):
         self.primary_statistics = WidgetsCreator.getMergedPrimary(self.manager.screens[2].ids.race.text)
-        self.secondary_statistics = WidgetsCreator.getMergedSecondary(self.manager.screens[2].ids.race.text, self.primary_statistics)
+        self.secondary_statistics = WidgetsCreator.getMergedSecondary(self.manager.screens[2].ids.race.text,
+                                                                      self.primary_statistics)
 
         WidgetsCreator.setCharacterStatisticsWidget(self.primaryStatistics,
                                                     self.secondaryStatistics,
-                                                     self.primary_statistics,
+                                                    self.primary_statistics,
                                                     self.secondary_statistics)
 
     pass
@@ -130,11 +144,8 @@ class CharacterCreateProfession(Screen):
     professions = Handler.get_data("Professions")
 
     def press(self):
-        if self.profession.text == "Professions":
+        if self.filledCorrectly():
 
-            Popup.display_error('Please choose a desired profession')
-
-        else:
             data = {'name': self.manager.screens[2].nameOfCharacter.text,
                     'age': self.manager.screens[2].age.text,
                     'weight': self.manager.screens[2].weight.text,
@@ -146,14 +157,31 @@ class CharacterCreateProfession(Screen):
                     'star_sign': self.manager.screens[2].starSign.text,
                     'primary_statistics': self.manager.screens[3].primary_statistics,
                     'secondary_statistics': self.manager.screens[3].secondary_statistics,
-                    'profession': self.profession.text}
+                    'profession': self.profession.text,
+                    'equipment': self.equipment.text,
+                    'weapon': self.weapon.text,
+                    'armor': self.armor.text}
+            if self.manager.account.user == None:
+                data["userUID"] = ""
+            else:
+                data["userUID"] = self.manager.account.getUID()
             Handler.push_data(data, 'Character')
-            #self.manager.screens[2].clearBoxes()
+            self.manager.screens[2].clearBoxes()
             self.manager.screens[3].clearBoxes()
             self.clearBoxes()
 
             self.manager.transition.direction = "up"
             self.manager.current = "Main"
+
+        else:
+
+            Popup.display_info('Please choose a desired profession')
+
+    def filledCorrectly(self):
+        if self.profession.text == "Professions":
+            return False
+        else:
+            return True
 
     def setBoxes(self):
         for entity in self.professions:
@@ -163,9 +191,9 @@ class CharacterCreateProfession(Screen):
                 self.weapon.text = entity["weapon"]
                 self.armor.text = entity["armor"]
                 WidgetsCreator.setStatisticsWidget(entity["primaryStatistics"],
-                                                    entity["secondaryStatistics"],
-                                                    self.primaryStatistics,
-                                                    self.secondaryStatistics)
+                                                   entity["secondaryStatistics"],
+                                                   self.primaryStatistics,
+                                                   self.secondaryStatistics)
         pass
 
     def clearBoxes(self):
@@ -178,7 +206,7 @@ class CharacterCreateProfession(Screen):
         self.secondaryStatistics.text = ""
 
         WidgetsCreator.clearStatisticsWidget(self.primaryStatistics,
-                                            self.secondaryStatistics)
+                                             self.secondaryStatistics)
 
     def setDropdowns(self):
         self.profession.values = []
@@ -219,7 +247,7 @@ class CharacterBoard(Screen):
     def refresh(self):
         character = Handler.get_data("Character")
         self.clear()
-        #self.fill(self.layout, character)
+        self.fill(self.layout, character)
         if self.openedTimes != 2:
             self.openedTimes += 1
 
@@ -239,7 +267,6 @@ class CharacterBoard(Screen):
                                     "Statistics secondary : " + str(entity['secondary_statistics']),
                                     "Eyes : " + str(entity['eye_colour']),
                                     "Hair : " + str(entity['hair_colour']),
-                                    "Money : " + str(entity['money']),
                                     "Origin : " + str(entity['origin']),
                                     "Profession : " + str(entity['profession']),
                                     "Race : " + str(entity['race']),
@@ -247,6 +274,7 @@ class CharacterBoard(Screen):
                                     "Star sign : " + str(entity['star_sign']),
                                     "Equipment : " + str(entity['equipment']),
                                     "Weapon : " + str(entity['weapon']),
+                                    "Armor : " + str(entity['armor']),
                                     "Weight : " + str(entity['weight'])],
 
                             height=30, size_hint=(1, None),
