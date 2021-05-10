@@ -30,7 +30,6 @@ pycryptodome==3.10.1
 Pygments==2.8.1
 pyinstaller==4.3
 pyinstaller-hooks-contrib==2021.1
-pyparsing==2.4.7
 pypiwin32==223
 Pyrebase4==4.4.3
 pytest==6.2.4
