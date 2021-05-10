@@ -21,19 +21,21 @@ a = Analysis(['main_kivi.py'],
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 			 
-
+a.datas += [('Code\main_kivi.kv',
+'D\\Repositories\\Desktop\main_kivi.kv',
+'DATA')]
 			 
 exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='main_kivi',
+          name='Warhammer Helper',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True )
-coll = COLLECT(exe, Tree('D:\\Repositories\\Desktop\\'),
+          console=True , icon='assets\\WH_logo.ico')
+coll = COLLECT(exe, Tree('D:\\Repositories\\Desktop\\'), Tree('D:\\Repositories\\asset\\'),
                a.binaries,
                a.zipfiles,
                a.datas,
@@ -41,4 +43,4 @@ coll = COLLECT(exe, Tree('D:\\Repositories\\Desktop\\'),
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='main_kivi')
+               name='Warhammer Helper')

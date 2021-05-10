@@ -54,9 +54,7 @@ class Account:
                 Popup.display_info("Registration was successful! You can try to log in now")
                 return True
             else:
-                Popup.display_error("Invalid password confirmation\n" +
-                                    "Pass: " + password +
-                                    "Conf: " + password_confirm)
+                Popup.display_error("Invalid password confirmation")
                 return False
         except requests.HTTPError as e:
             error_json = e.args[1]

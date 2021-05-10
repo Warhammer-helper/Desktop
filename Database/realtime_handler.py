@@ -19,19 +19,19 @@ class Handler:
     def push_data(data, child: str):
         try:
             db.child(child.capitalize()).push(data)
-            return 1
+            return True
         except:
             Popup.display_error("Something went wrong")
-            return 0
+            return False
 
     @staticmethod
     def set_data(data, name, child: str):
         try:
             db.child(child.capitalize()).child(name.capitalize()).set(data)
-            return 1
+            return True
         except:
             Popup.display_error("Something went wrong")
-            return 0
+            return False
 
     @staticmethod
     def update_data(data, name: str, child: str):
@@ -40,10 +40,11 @@ class Handler:
             for entity in database.each():
                 if (entity.val()['name'] == name.lower()):
                     db.child(child.capitalize()).child(entity.key()).update(data)
-            return 1
+                    return True
+            return False
         except:
             Popup.display_error("Something went wrong")
-            return 0
+            return False
 
     @staticmethod
     def delete_data(item, child: str):
@@ -53,10 +54,11 @@ class Handler:
                 if item == entity.val():
                     print("BOOM")
                     db.child(child.capitalize()).child(entity.key()).remove()
-            return 1
+                    return True
+            return False
         except:
             Popup.display_error("Something went wrong")
-            return 0
+            return False
 
     @staticmethod
     def get_data(child: str):
@@ -67,5 +69,4 @@ class Handler:
                 items.append(entity.val())
         except:
             Popup.display_error("Something went wrong")
-            return 0
         return items
