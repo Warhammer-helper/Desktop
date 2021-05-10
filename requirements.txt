@@ -22,7 +22,6 @@ pefile==2019.4.18
 Pillow==8.2.0
 pluggy==0.13.1
 protobuf==3.16.0rc1
-py==1.10.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
